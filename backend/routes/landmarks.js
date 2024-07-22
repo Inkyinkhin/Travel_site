@@ -49,8 +49,10 @@ const upload = multer({ storage: storage });
 router.post("/add_landmark", upload.array("images", 10), (req, res) => {
   const { name, location, description, latitude, longitude } = req.body;
   console.log(req.body);
+  // check city ID
+
   const stmt = db.prepare(
-    "INSERT INTO landmarks (name, location, description, lad, lung ) VALUES (?, ?, ?,?,?)"
+    "INSERT INTO landmarks (name ,location, description, lad, lung ) VALUES (?, ?, ?,?,?)"
   );
   const info = stmt.run(name, location, description, latitude, longitude);
   const landmarkId = info.lastInsertRowid;
@@ -67,23 +69,44 @@ router.post("/add_landmark", upload.array("images", 10), (req, res) => {
   res.json({ id: landmarkId });
 });
 
-// Create a new city
-router.get("/get_city/:name", (req, res) => {
-  const { name } = req.body;
-  const stmt = db.prepare("SELECT * FROM cities WHERE name = ?");
-  const info = stmt.run(name);
-  const cityId = info.lastInsertRowid;
+router.get("/get_landmarks/:location", (req, res) => {
+  const { location } = req.params;
 
-  // if (req.files) {
-  //   const imgStmt = db.prepare(
-  //     "INSERT INTO images (city_id, path) VALUES (?, ?)"
-  //   );
-  //   for (const file of req.files) {
-  //     imgStmt.run(landmarkId, file.path);
-  //   }
-  // }
+  try {
+    // Prepare the query with a placeholder for the location parameter
+    const stmt = db.prepare("SELECT * FROM landmarks WHERE location = ?");
 
-  res.json({ id: cityId });
+    // Execute the query synchronously
+    const rows = stmt.all(location);
+
+    // Send back the rows as JSON
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Database error" });
+  } finally {
+    // Finalize the statement after use (optional with better-sqlite3)
+    if (stmt) stmt.finalize();
+  }
+});
+
+router.get("/get_landmarks/", (req, res) => {
+  try {
+    // Prepare the query with a placeholder for the location parameter
+    const stmt = db.prepare("SELECT * FROM landmarks");
+
+    // Execute the query synchronously
+    const rows = stmt.all();
+
+    // Send back the rows as JSON
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Database error" });
+  } finally {
+    // Finalize the statement after use (optional with better-sqlite3)
+    if (stmt) stmt.finalize();
+  }
 });
 
 // Update a landmark

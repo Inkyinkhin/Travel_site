@@ -5,9 +5,25 @@ const db = new Database("db/landmarks.db");
 const createLandmarksTable = `
   CREATE TABLE IF NOT EXISTS landmarks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    city_id INTEGER,
     name TEXT,
     location TEXT,
-    description TEXT
+    description TEXT,
+    lad REAL,
+    lung REAL,
+    FOREIGN KEY (city_id) REFERENCES cities (id) ON DELETE CASCADE
+  
+  )
+`;
+
+// Create City Table
+const createCityTable = `
+  CREATE TABLE IF NOT EXISTS cities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    lad REAL,
+    lung REAL
+   
   )
 `;
 
@@ -22,6 +38,7 @@ const createImagesTable = `
 `;
 
 db.exec(createLandmarksTable);
+db.exec(createCityTable);
 db.exec(createImagesTable);
 
 console.log("Database initialized.");

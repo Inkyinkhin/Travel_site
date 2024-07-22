@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Form, Button, Container, Row, Col, Image } from "react-bootstrap";
 import { XCircleFill } from "react-bootstrap-icons"; // Import close icon from Bootstrap Icons
+import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+// import L from "leaflet";
+import "leaflet-control-geocoder";
 
 const UploadLandmark = () => {
   const [name, setName] = useState("");
@@ -9,6 +13,20 @@ const UploadLandmark = () => {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+
+  const GeocodeOnClick = () => {
+    useMapEvents({
+      click: async (e) => {
+        const { latlng } = e;
+        setLatitude(latlng.lat);
+        setLongitude(latlng.lng);
+      },
+    });
+
+    return null;
+  };
 
   // Update image previews when new images are selected
   const handleImageChange = (e) => {
@@ -36,6 +54,8 @@ const UploadLandmark = () => {
     formData.append("name", name);
     formData.append("location", location);
     formData.append("description", description);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
     for (let i = 0; i < images.length; i++) {
       formData.append("images", images[i]);
     }
@@ -123,6 +143,38 @@ const UploadLandmark = () => {
                 ))}
               </div>
             </Form.Group>
+            <div style={{ height: "100vh" }}>
+              <MapContainer
+                center={[51.505, -0.09]}
+                zoom={13}
+                style={{ height: "70%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <GeocodeOnClick />
+              </MapContainer>
+              <h4>Coordinates:</h4>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Latitude"
+                  value={latitude}
+                  readOnly
+                  controlId="formLatitude"
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Longitude"
+                  value={longitude}
+                  readOnly
+                  controlId="formLongitude"
+                />
+              </label>
+            </div>
 
             <Button variant="primary" type="submit">
               Upload Landmark

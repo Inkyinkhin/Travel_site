@@ -69,6 +69,7 @@ router.post("/add_landmark", upload.array("images", 10), (req, res) => {
   res.json({ id: landmarkId });
 });
 
+//get_landmarks by location
 router.get("/get_landmarks/:location", (req, res) => {
   const { location } = req.params;
 
@@ -90,6 +91,7 @@ router.get("/get_landmarks/:location", (req, res) => {
   }
 });
 
+//get all landmarks
 router.get("/get_landmarks/", (req, res) => {
   try {
     // Prepare the query with a placeholder for the location parameter
@@ -97,6 +99,34 @@ router.get("/get_landmarks/", (req, res) => {
 
     // Execute the query synchronously
     const rows = stmt.all();
+
+    // Send back the rows as JSON
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Database error" });
+  } finally {
+    // Finalize the statement after use (optional with better-sqlite3)
+    if (stmt) stmt.finalize();
+  }
+});
+
+//get landmarks by names
+router.get("/get_landmarks_by_name/:name", (req, res) => {
+  const { name } = req.params;
+
+  try {
+    // Prepare the query with a placeholder for the location parameter
+
+    const stmt = db.prepare(`
+      SELECT landmarks.id, landmarks.name AS landmark_name, images.path
+      FROM landmarks
+      JOIN images ON landmarks.id = images.landmark_id
+      WHERE landmarks.name = ?
+    `);
+
+    // Execute the query synchronously
+    const rows = stmt.all(name);
 
     // Send back the rows as JSON
     res.json(rows);

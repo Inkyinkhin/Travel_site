@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   MapContainer,
   TileLayer,
@@ -67,7 +68,7 @@ const Content = () => {
         {markers.map((marker) => (
           <Marker key={marker.id} position={marker.position} icon={customIcon}>
             <Popup>
-              <p>{marker.name}</p>
+              <Link to={`/content/${marker.name}`}>{marker.name}</Link>
             </Popup>
           </Marker>
         ))}

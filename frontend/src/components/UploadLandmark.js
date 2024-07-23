@@ -145,8 +145,8 @@ const UploadLandmark = () => {
             </Form.Group>
             <div style={{ height: "100vh" }}>
               <MapContainer
-                center={[51.505, -0.09]}
-                zoom={13}
+                center={[21.619344477294792, 95.69970689713956]}
+                zoom={6}
                 style={{ height: "70%", width: "100%" }}
               >
                 <TileLayer

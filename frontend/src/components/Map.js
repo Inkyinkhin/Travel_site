@@ -29,7 +29,7 @@ const App = () => {
   return (
     <div style={{ height: "100vh" }}>
       <MapContainer
-        center={[51.505, -0.09]}
+        center={[21.619344477294792, 95.69970689713956]}
         zoom={13}
         style={{ height: "100%", width: "100%" }}
       >

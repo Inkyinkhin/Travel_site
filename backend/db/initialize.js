@@ -1,18 +1,14 @@
 const Database = require("better-sqlite3");
 const db = new Database("db/landmarks.db");
 
-// Create Landmarks Table
 const createLandmarksTable = `
   CREATE TABLE IF NOT EXISTS landmarks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    city_id INTEGER,
     name TEXT,
     location TEXT,
     description TEXT,
     lad REAL,
-    lung REAL,
-    FOREIGN KEY (city_id) REFERENCES cities (id) ON DELETE CASCADE
-  
+    lung REAL
   )
 `;
 
@@ -23,7 +19,6 @@ const createCityTable = `
     name TEXT,
     lad REAL,
     lung REAL
-   
   )
 `;
 

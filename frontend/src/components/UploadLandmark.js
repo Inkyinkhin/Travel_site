@@ -9,7 +9,7 @@ import "leaflet-control-geocoder";
 
 const UploadLandmark = () => {
   const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
+  const [city_name, setCity_name] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -52,7 +52,7 @@ const UploadLandmark = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("location", location);
+    formData.append("city_name", city_name);
     formData.append("description", description);
     formData.append("latitude", latitude);
     formData.append("longitude", longitude);
@@ -94,13 +94,13 @@ const UploadLandmark = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="formLocation">
-              <Form.Label>Location</Form.Label>
+            <Form.Group controlId="formCity_name">
+              <Form.Label>city_name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter city_name"
+                value={city_name}
+                onChange={(e) => setCity_name(e.target.value)}
                 required
               />
             </Form.Group>

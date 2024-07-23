@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import UploadLandmark from "./components/UploadLandmark";
 import Content from "./components/Content";
+import LandmarkPost from "./components/LandmarkPost"; // Import LandmarkPost
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import Container from "react-bootstrap/Container";
@@ -33,6 +34,7 @@ function App() {
         <Route path="/upload_landmark" element={<UploadLandmark />} />
         <Route path="/content" element={<Content />} />
         <Route path="/about" element={<About />} />
+        <Route path="/landmark" element={<LandmarkPost />} /> {/* Add this line */}
       </Routes>
     </Router>
   );

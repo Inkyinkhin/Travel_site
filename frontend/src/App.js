@@ -5,6 +5,7 @@ import About from "./components/About";
 import UploadLandmark from "./components/UploadLandmark";
 import Content from "./components/Content";
 import FullContent from "./components/FullContent";
+import LandmarkPost from "./components/LandmarkPost"; // Import LandmarkPost
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 import Container from "react-bootstrap/Container";
@@ -39,6 +40,8 @@ function App() {
         <Route path="/content" element={<Content />} />
         <Route path="/content/:name" element={<FullContent />} />
         <Route path="/about" element={<About />} />
+        <Route path="/landmark" element={<LandmarkPost />} />{" "}
+        {/* Add this line */}
       </Routes>
     </Router>
   );

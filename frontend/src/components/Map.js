@@ -174,7 +174,7 @@ const GeocodeOnClick = ({ setGeocodeResult, setLandmarkData }) => {
           });
           navigate('/landmark', { state: { landmarkData: {
             title: name,
-            description: 'Description of ' + name,
+            description: 'Description of Description ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription of' + name,
             photos: [
               'https://via.placeholder.com/150',
               'https://via.placeholder.com/150',

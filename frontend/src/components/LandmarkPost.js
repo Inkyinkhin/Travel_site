@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Carousel from 'react-material-ui-carousel';
 import { useLocation } from 'react-router-dom';
@@ -9,6 +9,19 @@ const LandmarkPost = () => {
   const location = useLocation();
   const landmarkData = location.state?.landmarkData;
   const [currentPhoto, setCurrentPhoto] = useState(0);
+
+  // Effect for auto-sliding carousel
+  useEffect(() => {
+    if (!landmarkData?.photos?.length) return; // Early return if no photos
+
+    const interval = setInterval(() => {
+      setCurrentPhoto((prevIndex) =>
+        (prevIndex + 1) % landmarkData.photos.length
+      );
+    }, 3000); // Change photo every 3 seconds
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [landmarkData?.photos?.length]);
 
   if (!landmarkData) return <div>No data available</div>;
 
@@ -26,7 +39,7 @@ const LandmarkPost = () => {
         gap: '16px',
       }}
     >
-      <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '16px' }}>
+      <Typography variant="h4" style={{ textAlign: 'center', marginTop: '20px' }}>
         {landmarkData.title}
       </Typography>
 
@@ -35,6 +48,7 @@ const LandmarkPost = () => {
           display: 'flex',
           flex: '1',
           gap: '16px',
+          paddingTop: '50px', // Increase paddingTop here to push the content lower
         }}
       >
         <div
@@ -48,7 +62,7 @@ const LandmarkPost = () => {
           <div style={{ flex: '1', marginBottom: '8px', width: '50vw', position: 'relative' }}>
             <Carousel
               index={currentPhoto}
-              autoPlay={false}
+              autoPlay={false} // Disable autoPlay as we handle it manually
               nextArrow={<div style={arrowStyle}>→</div>}
               prevArrow={<div style={arrowStyle}>←</div>}
             >
@@ -74,7 +88,6 @@ const LandmarkPost = () => {
             flex: '1',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             overflowY: 'auto',
             marginLeft: '16px',
           }}
@@ -102,11 +115,6 @@ const arrowStyle = {
   fontSize: '18px',
   transform: 'translateY(-50%)',
   transition: 'background-color 0.3s ease',
-};
-
-const arrowHoverStyle = {
-  ...arrowStyle,
-  backgroundColor: 'rgba(0, 0, 0, 0.8)', // Darker background on hover
 };
 
 export default LandmarkPost;

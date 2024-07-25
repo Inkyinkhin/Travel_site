@@ -9,7 +9,7 @@ const db = new Database("db/landmarks.db");
 
 // insert cities
 
-const csvFilePath = path.join(__dirname, "cities/rakhine.csv");
+const csvFilePath = path.join(__dirname, "cities/kachin.csv");
 const results = [];
 fs.createReadStream(csvFilePath)
   .pipe(csv())
@@ -47,19 +47,19 @@ const upload = multer({ storage: storage });
 
 // Create a new landmark with images
 router.post("/add_landmark", upload.array("images", 10), (req, res) => {
-  const { name, location, description, latitude, longitude } = req.body;
+  const { name, city_name, description, latitude, longitude } = req.body;
   console.log(req.body);
   // check city ID
 
   const stmt = db.prepare(
-    "INSERT INTO landmarks (name ,location, description, lad, lung ) VALUES (?, ?, ?,?,?)"
+    "INSERT INTO landmarks (name ,city_name, description, lad, lung ) VALUES (?, ?, ?,?,?)"
   );
-  const info = stmt.run(name, location, description, latitude, longitude);
+  const info = stmt.run(name, city_name, description, latitude, longitude);
   const landmarkId = info.lastInsertRowid;
 
   if (req.files) {
     const imgStmt = db.prepare(
-      "INSERT INTO images (landmark_id, path) VALUES (?, ?)"
+      "INSERT INTO images (landmark_id, image_url) VALUES (?, ?)"
     );
     for (const file of req.files) {
       imgStmt.run(landmarkId, file.path);
@@ -70,15 +70,15 @@ router.post("/add_landmark", upload.array("images", 10), (req, res) => {
 });
 
 //get_landmarks by location
-router.get("/get_landmarks/:location", (req, res) => {
+router.get("/get_landmarks/:city_name", (req, res) => {
   const { location } = req.params;
 
   try {
     // Prepare the query with a placeholder for the location parameter
-    const stmt = db.prepare("SELECT * FROM landmarks WHERE location = ?");
+    const stmt = db.prepare("SELECT * FROM landmarks WHERE city_name = ?");
 
     // Execute the query synchronously
-    const rows = stmt.all(location);
+    const rows = stmt.all(city_name);
 
     // Send back the rows as JSON
     res.json(rows);
@@ -119,7 +119,7 @@ router.get("/get_landmarks_by_name/:name", (req, res) => {
     // Prepare the query with a placeholder for the location parameter
 
     const stmt = db.prepare(`
-      SELECT landmarks.id, landmarks.name AS landmark_name, images.path
+      SELECT landmarks.id, landmarks.name AS landmark_name, images.image_url
       FROM landmarks
       JOIN images ON landmarks.id = images.landmark_id
       WHERE landmarks.name = ?
@@ -141,11 +141,11 @@ router.get("/get_landmarks_by_name/:name", (req, res) => {
 
 // Update a landmark
 router.put("/update_landmark/:id", (req, res) => {
-  const { name, location, description } = req.body;
+  const { name, city_name, description } = req.body;
   const stmt = db.prepare(
-    "UPDATE landmarks SET name = ?, location = ?, description = ? WHERE id = ?"
+    "UPDATE landmarks SET name = ?, city_name = ?, description = ? WHERE id = ?"
   );
-  const info = stmt.run(name, location, description, req.params.id);
+  const info = stmt.run(name, city_name, description, req.params.id);
   if (info.changes > 0) {
     res.send("Landmark updated");
   } else {

@@ -39,6 +39,7 @@ function App() {
         <Route path="/upload_landmark" element={<UploadLandmark />} />
         <Route path="/content" element={<Content />} />
         <Route path="/content/:name" element={<FullContent />} />
+        <Route path="/:city" element={<Content />} />
         <Route path="/about" element={<About />} />
         <Route path="/landmark" element={<LandmarkPost />} />{" "}
         {/* Add this line */}

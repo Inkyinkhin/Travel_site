@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { useNavigate, Link } from "react-router-dom";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet-control-geocoder";
@@ -14,6 +14,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
+import axios from "axios";
 
 const statesAndCities = {
   Kachin: {
@@ -205,10 +206,49 @@ const Home = () => {
   const [mapCenter, setMapCenter] = useState([21.9162, 95.956]);
   const [mapZoom, setMapZoom] = useState(6);
 
-  const handleCityClick = (coords) => {
+  const handleCityClick = (coords, city) => {
     setMapCenter(coords);
     setMapZoom(8);
+    <Link to={`/${city}`}></Link>;
   };
+
+  const customIcon = new L.Icon({
+    iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-red.png",
+    shadowUrl: "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+    iconSize: [20, 55],
+    shadowSize: [20, 27],
+    iconAnchor: [22, 94],
+    shadowAnchor: [4, 62],
+    popupAnchor: [-3, -76],
+  });
+
+  const [markers, setMarkers] = useState([]);
+  const initialPosition = [21.619344477294792, 95.69970689713956]; // Initial map center
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/landmarks/get_landmarks/"
+        );
+        const landmarkData = response.data; // Assuming API returns an array of landmarks
+
+        // Transforming landmarkData into markers array with positions
+        const markersArray = landmarkData.map((landmark) => ({
+          position: [landmark.lad, landmark.lung],
+          name: landmark.name,
+          id: landmark.id, // Assuming each landmark has an id
+        }));
+
+        setMarkers(markersArray);
+      } catch (error) {
+        console.error("Error fetching landmarks:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div style={{ height: "100vh", display: "flex" }}>
@@ -248,7 +288,7 @@ const Home = () => {
                   <ListItem
                     key={city}
                     button
-                    onClick={() => handleCityClick(coords)}
+                    onClick={() => handleCityClick(coords, city)}
                   >
                     <ListItemText
                       primary={city}
@@ -284,6 +324,17 @@ const Home = () => {
             setGeocodeResult={setGeocodeResult}
             setLandmarkData={setLandmarkData}
           />
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              position={marker.position}
+              icon={customIcon}
+            >
+              <Popup>
+                <Link to={`/content/${marker.name}`}>{marker.name}</Link>
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
     </div>

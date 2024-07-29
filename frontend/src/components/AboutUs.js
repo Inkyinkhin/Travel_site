@@ -55,7 +55,7 @@ const AboutUs = () => {
             animate={{ opacity: 1 }} 
             transition={{ duration: 1, delay: 0.5 }}
           >
-           We meticulously2222 curate each location to offer not just a map but a gateway to understanding the essence of Myanmar. Our platform is designed to empower users with detailed insights, practical travel tips, and captivating visual content, making it easier for explorers to plan their journey and fully appreciate the country’s diverse beauty. Whether you're an intrepid traveler, a cultural enthusiast, or someone seeking a deeper connection with Myanmar, our mission is to inspire and inform, providing you with the tools to experience the country in all its glory.
+           We meticulously curate each location to offer not just a map but a gateway to understanding the essence of Myanmar. Our platform is designed to empower users with detailed insights, practical travel tips, and captivating visual content, making it easier for explorers to plan their journey and fully appreciate the country’s diverse beauty. Whether you're an intrepid traveler, a cultural enthusiast, or someone seeking a deeper connection with Myanmar, our mission is to inspire and inform, providing you with the tools to experience the country in all its glory.
           </motion.p>
           <motion.p 
             initial={{ opacity: 0 }} 

@@ -95,7 +95,7 @@ const UploadLandmark = () => {
             </Form.Group>
 
             <Form.Group controlId="formCity_name">
-              <Form.Label>city_name</Form.Label>
+              <Form.Label>City name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter city_name"

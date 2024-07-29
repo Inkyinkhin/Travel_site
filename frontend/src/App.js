@@ -24,8 +24,9 @@ function App() {
           <Navbar.Brand href="/">Navbar</Navbar.Brand>
           <Nav className="justify-content-end" style={{ width: "100%" }}>
             <Nav.Link href="/">Map</Nav.Link>
-            <Nav.Link href="/about">About</Nav.Link>
-            <Nav.Link href="/content">Content</Nav.Link>
+            <Nav.Link href="/aboutus">About</Nav.Link>
+            <Nav.Link href="/upload_landmark">UploadLandmark</Nav.Link>
+            {/* <Nav.Link href="/content">Content</Nav.Link> */}
 
             {/* <Nav.Link href="/content">Content</Nav.Link> */}
             {/* <Nav.Link href="/test">Test</Nav.Link> */}
@@ -39,10 +40,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Map />} />
         <Route path="/upload_landmark" element={<UploadLandmark />} />
-        <Route path="/content" element={<Content />} />
-        <Route path="/content/:name" element={<FullContent />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/landmark" element={<LandmarkPost />} />{" "}
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/:name" element={<LandmarkPost />} />{" "}
         {/* Add this line */}
       </Routes>
     </Router>

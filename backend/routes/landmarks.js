@@ -9,27 +9,27 @@ const db = new Database("db/landmarks.db");
 
 // insert cities
 
-const csvFilePath = path.join(__dirname, "cities/kachin.csv");
-const results = [];
-fs.createReadStream(csvFilePath)
-  .pipe(csv())
-  .on("data", (data) => results.push(data))
-  .on("end", () => {
-    const stmt = db.prepare(
-      "INSERT INTO cities (name, lad, lung) VALUES (?, ?, ?)"
-    );
-    const insertMany = db.transaction((cities) => {
-      for (const city of cities) {
-        stmt.run(city.City, parseFloat(city.lat), parseFloat(city.long));
-      }
-    });
-    try {
-      insertMany(results);
-      console.log("Data inserted successfully");
-    } catch (error) {
-      console.error("Failed to insert data", error);
-    }
-  });
+// const csvFilePath = path.join(__dirname, "cities/kachin.csv");
+// const results = [];
+// fs.createReadStream(csvFilePath)
+//   .pipe(csv())
+//   .on("data", (data) => results.push(data))
+//   .on("end", () => {
+//     const stmt = db.prepare(
+//       "INSERT INTO cities (name, lad, lung) VALUES (?, ?, ?)"
+//     );
+//     const insertMany = db.transaction((cities) => {
+//       for (const city of cities) {
+//         stmt.run(city.City, parseFloat(city.lat), parseFloat(city.long));
+//       }
+//     });
+//     try {
+//       insertMany(results);
+//       console.log("Data inserted successfully");
+//     } catch (error) {
+//       console.error("Failed to insert data", error);
+//     }
+//   });
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -62,7 +62,8 @@ router.post("/add_landmark", upload.array("images", 10), (req, res) => {
       "INSERT INTO images (landmark_id, image_url) VALUES (?, ?)"
     );
     for (const file of req.files) {
-      imgStmt.run(landmarkId, file.path);
+      console.log("check", file);
+      imgStmt.run(landmarkId, file.filename);
     }
   }
 
@@ -78,7 +79,7 @@ router.get("/get_landmarks/:city_name", (req, res) => {
     const stmt = db.prepare("SELECT * FROM landmarks WHERE city_name = ?");
 
     // Execute the query synchronously
-    const rows = stmt.all(city_name);
+    const rows = stmt.all(location);
 
     // Send back the rows as JSON
     res.json(rows);
@@ -93,6 +94,7 @@ router.get("/get_landmarks/:city_name", (req, res) => {
 
 //get all landmarks
 router.get("/get_landmarks/", (req, res) => {
+  let stmt;
   try {
     // Prepare the query with a placeholder for the location parameter
     const stmt = db.prepare("SELECT * FROM landmarks");
@@ -115,11 +117,12 @@ router.get("/get_landmarks/", (req, res) => {
 router.get("/get_landmarks_by_name/:name", (req, res) => {
   const { name } = req.params;
 
+  let stmt;
+
   try {
     // Prepare the query with a placeholder for the location parameter
-
     const stmt = db.prepare(`
-      SELECT landmarks.id, landmarks.name AS landmark_name, images.image_url
+      SELECT landmarks.id, landmarks.description AS description ,landmarks.name AS landmark_name, images.image_url
       FROM landmarks
       JOIN images ON landmarks.id = images.landmark_id
       WHERE landmarks.name = ?
@@ -127,9 +130,14 @@ router.get("/get_landmarks_by_name/:name", (req, res) => {
 
     // Execute the query synchronously
     const rows = stmt.all(name);
-
+    console.log(rows);
     // Send back the rows as JSON
-    res.json(rows);
+    res.json(
+      rows.map((e) => ({
+        ...e,
+        image_url: `http://localhost:3001/uploads/${e.image_url}`,
+      }))
+    );
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Database error" });

@@ -14,14 +14,15 @@ import "leaflet-control-geocoder";
 import axios from "axios";
 
 const customIcon = new L.Icon({
-  iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-red.png",
-  shadowUrl: "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
-  iconSize: [38, 95],
-  shadowSize: [50, 64],
-  iconAnchor: [22, 94],
-  shadowAnchor: [4, 62],
-  popupAnchor: [-3, -76],
+  iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+  shadowUrl: 'https://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png',
+  iconSize: [32, 32],    // Adjust the size based on your preference
+  shadowSize: [59, 32],  // Adjust the size based on your preference
+  iconAnchor: [16, 32],  // Adjust the anchor based on your preference
+  shadowAnchor: [16, 32], // Adjust the anchor based on your preference
+  popupAnchor: [0, -32]  // Adjust the popup position based on your preference
 });
+
 
 const Content = () => {
   const [markers, setMarkers] = useState([]);

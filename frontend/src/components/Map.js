@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from 'leaflet';
-import 'leaflet-control-geocoder';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Paper from '@mui/material/Paper';
+import L from "leaflet";
+import "leaflet-control-geocoder";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
+import axios from "axios";
+
+const customIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  shadowUrl: "https://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
+  iconSize: [32, 32], // Adjust the size based on your preference
+  shadowSize: [59, 32], // Adjust the size based on your preference
+  iconAnchor: [16, 32], // Adjust the anchor based on your preference
+  shadowAnchor: [16, 32], // Adjust the anchor based on your preference
+  popupAnchor: [0, -32], // Adjust the popup position based on your preference
+});
 
 const statesAndCities = {
   "Kachin": {
@@ -420,89 +431,114 @@ const MapView = ({ center, zoom }) => {
   React.useEffect(() => {
     map.flyTo(center, zoom);
   }, [center, zoom, map]);
-
   return null;
 };
-
 const GeocodeOnClick = ({ setGeocodeResult, setLandmarkData }) => {
   const map = useMap();
   const navigate = useNavigate();
-
   React.useEffect(() => {
     const handleMapClick = async (e) => {
       const { latlng } = e;
       const geocoder = L.Control.Geocoder.nominatim();
-
       geocoder.reverse(latlng, 18, (results) => {
         if (results.length > 0) {
           const name = results[0].name;
           setGeocodeResult(name);
           setLandmarkData({
             title: name,
-            description: 'Description of ' + name,
+            description: "Description of " + name,
             photos: [
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-            ]
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+              "https://via.placeholder.com/150",
+            ],
           });
-          navigate('/landmark', { state: { landmarkData: {
-            title: name,
-            description: 'Description of Description ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription of' + name,
-            photos: [
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-              'https://via.placeholder.com/150',
-            ]
-          }}});
+          navigate("/landmark", {
+            state: {
+              landmarkData: {
+                title: name,
+                description:
+                  "Description of Description ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription ofDescription of" +
+                  name,
+                photos: [
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                  "https://via.placeholder.com/150",
+                ],
+              },
+            },
+          });
         } else {
           setGeocodeResult("No address found");
           setLandmarkData(null);
         }
       });
     };
-
-    map.on('click', handleMapClick);
-
+    map.on("click", handleMapClick);
     return () => {
-      map.off('click', handleMapClick);
+      map.off("click", handleMapClick);
     };
   }, [map, setGeocodeResult, setLandmarkData, navigate]);
-
   return null;
 };
-
 const Home = () => {
   const [geocodeResult, setGeocodeResult] = useState(null);
   const [landmarkData, setLandmarkData] = useState(null);
-  const [mapCenter, setMapCenter] = useState([21.9162, 95.9560]);
+  const [mapCenter, setMapCenter] = useState([21.9162, 95.956]);
   const [mapZoom, setMapZoom] = useState(6);
   const [activeCity, setActiveCity] = useState(null); // State for active city
   const [expandedState, setExpandedState] = useState(null); // State for expanded state
-
   const handleCityClick = (city, coords) => {
     setMapCenter(coords);
     setMapZoom(13);
     setActiveCity(city); // Set active city
   };
-
   const handleAccordionChange = (state) => (event, isExpanded) => {
     setExpandedState(isExpanded ? state : null);
   };
+
+  const [markers, setMarkers] = useState([]);
+  const initialPosition = [21.619344477294792, 95.69970689713956]; // Initial map center
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/landmarks/get_landmarks/"
+        );
+
+        const landmarkData = response.data; // Assuming API returns an array of landmarks
+
+        // Transforming landmarkData into markers array with positions
+        const markersArray = landmarkData.map((landmark) => ({
+          position: [landmark.lad, landmark.lung],
+          name: landmark.name,
+          id: landmark.id, // Assuming each landmark has an id
+        }));
+
+        setMarkers(markersArray);
+      } catch (error) {
+        console.error("Error fetching landmarks:", error);
+        // Handle error state if needed
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div style={{ height: "100vh", display: "flex" }}>
@@ -514,8 +550,8 @@ const Home = () => {
           overflowY: "auto",
           padding: "5px",
           margin: "3px",
-          backgroundColor: "#f9f9f9",
-          marginBottom: "30px"
+          backgroundColor: "#F9F9F9",
+          marginBottom: "30px",
         }}
       >
         {Object.entries(statesAndCities).map(([state, cities]) => (
@@ -529,9 +565,9 @@ const Home = () => {
               aria-controls={`${state}-content`}
               id={`${state}-header`}
               style={{
-                backgroundColor: "#e0e0e0",
+                backgroundColor: "#E0E0E0",
                 padding: "8px",
-                height: "20px"
+                height: "50px"
               }}
             >
               <Typography variant="h6" style={{ flex: 1 }}>
@@ -548,15 +584,16 @@ const Home = () => {
                     button
                     onClick={() => handleCityClick(city, coords)}
                     style={{
-                      backgroundColor: activeCity === city ? '#d1c4e9' : 'transparent', // Highlight active city
-                      borderRadius: '4px',
-                      marginBottom: '4px',
-                      justifyContent: 'center'
+                      backgroundColor:
+                        activeCity === city ? "#D1C4E9" : "transparent", // Highlight active city
+                      borderRadius: "4px",
+                      marginBottom: "4px",
+                      justifyContent: "center",
                     }}
                   >
                     <ListItemText
                       primary={city}
-                      primaryTypographyProps={{ style: { fontWeight: '500' } }}
+                      primaryTypographyProps={{ style: { fontWeight: "500" } }}
                     />
                     <Divider />
                   </ListItem>
@@ -566,22 +603,41 @@ const Home = () => {
           </Accordion>
         ))}
       </Paper>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <MapContainer
           center={mapCenter}
           zoom={mapZoom}
-          style={{ height: "100vh", width: "100%", marginTop: "5px", marginBottom: "40px" }}
+          style={{
+            height: "100vh",
+            width: "100%",
+            marginTop: "5px",
+            marginBottom: "40px",
+          }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <MapView center={mapCenter} zoom={mapZoom} />
-          <GeocodeOnClick setGeocodeResult={setGeocodeResult} setLandmarkData={setLandmarkData} />
+          <GeocodeOnClick
+            setGeocodeResult={setGeocodeResult}
+            setLandmarkData={setLandmarkData}
+          />
+          {/* Render markers */}
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              position={marker.position}
+              icon={customIcon}
+            >
+              <Popup>
+                <Link to={`${marker.name}`}>{marker.name}</Link>
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
     </div>
   );
 };
-
 export default Home;

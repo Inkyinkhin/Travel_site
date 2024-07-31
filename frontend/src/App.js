@@ -21,7 +21,7 @@ function App() {
         data-bs-theme="dark"
       >
         <Container>
-          <Navbar.Brand href="/">Navbar</Navbar.Brand>
+          <Navbar.Brand href="/">MysticalMyanmar</Navbar.Brand>
           <Nav className="justify-content-end" style={{ width: "100%" }}>
             <Nav.Link href="/">Map</Nav.Link>
             <Nav.Link href="/aboutus">About</Nav.Link>
